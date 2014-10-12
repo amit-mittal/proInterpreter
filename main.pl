@@ -24,6 +24,10 @@ or_d(true,true,true).
 non_d(true,false).
 non_d(false,true).
 
+/*If-else Declaration*/
+ifthenelse(true, X, Y, X).
+ifthenelse(false, X, Y, Y).
+
 /*Expression Evaluation*/
 eval(A * B, CV, Vars):- eval(A, AV, Vars), eval(B, BV, Vars), CV is AV * BV.
 eval(A + B, CV, Vars):- eval(A, AV, Vars), eval(B, BV, Vars), CV is AV + BV.
@@ -38,6 +42,7 @@ eval(or(X, Y), R):- eval(X, XV), eval(Y, YV), or_d(XV, YV, R).
 eval(not(X), R):- eval(X, XV), non_d(XV, R).
 
 /*Conditional Expression Evaluation*/
+/*Evaluation of A and B on the basis of Variables is still left*/
 eval(A == B, R):- eval(A, CV1, _), eval(B, CV2, _), CV1 == CV2, R = true.
 eval(A == B, R):- eval(A, CV1, _), eval(B, CV2, _), CV1 =\= CV2, R = false.
 /*Similarly add other conditional operators*/
@@ -48,3 +53,8 @@ eval(assign(X, Y), OVars, NVars):- eval(Y, Val, OVars), find_replace_insert(X, V
 /*Compound statement Evaluation*/
 eval(compound([]), Var, Var).
 eval(compound([A|B]), OVars, NVars):- eval(A, OVars, IVars), eval(compound(B), IVars, NVars).
+
+/*If-else Declaration*/
+eval(ifthenelse(Expr, compound(X), compound(Y), compound(Z)), OVars, NVars):- eval(Expr, Boolval), 
+		ifthenelse(Boolval, compound(X), compound(Y), compound(Z)), eval(compound(Z), OVars, NVars).
+
