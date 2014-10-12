@@ -42,9 +42,8 @@ eval(or(X, Y), R):- eval(X, XV), eval(Y, YV), or_d(XV, YV, R).
 eval(not(X), R):- eval(X, XV), non_d(XV, R).
 
 /*Conditional Expression Evaluation*/
-/*Evaluation of A and B on the basis of Variables is still left*/
-eval(A == B, R):- eval(A, CV1, _), eval(B, CV2, _), CV1 == CV2, R = true.
-eval(A == B, R):- eval(A, CV1, _), eval(B, CV2, _), CV1 =\= CV2, R = false.
+eval(A == B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 == CV2, R = true.
+eval(A == B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =\= CV2, R = false.
 /*Similarly add other conditional operators*/
 
 /*Assignment Evaluation*/
