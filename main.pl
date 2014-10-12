@@ -44,7 +44,14 @@ eval(not(X), R):- eval(X, XV), non_d(XV, R).
 /*Conditional Expression Evaluation*/
 eval(A == B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 == CV2, R = true.
 eval(A == B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =\= CV2, R = false.
-/*Similarly add other conditional operators*/
+eval(A > B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 > CV2, R = true.
+eval(A > B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =< CV2, R = false.
+eval(A < B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 < CV2, R = true.
+eval(A < B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 >= CV2, R = false.
+eval(A >= B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 >= CV2, R = true.
+eval(A >= B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 < CV2, R = false.
+eval(A =< B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =< CV2, R = true.
+eval(A =< B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 > CV2, R = false.
 
 /*Assignment Evaluation*/
 eval(assign(X, Y), OVars, NVars):- eval(Y, Val, OVars), find_replace_insert(X, Val, OVars, NVars).
@@ -59,5 +66,5 @@ eval(ifthenelse(Expr, compound(X), compound(Y), compound(Z)), OVars, NVars):- ev
 
 /*While Evaluation*/
 eval(while(A, compound(X)), OVars, NVars):- eval(A, false, OVars), NVars = OVars.
-eval(while(A, compound(X)), OVars, NVars):- eval(A, true, OVars), eval(compound(X), OVars, NVars), 
-		eval(while(A, compound(X)), NVars, _).
+eval(while(A, compound(X)), OVars, NVars):- eval(A, true, OVars), eval(compound(X), OVars, IVars), 
+		eval(while(A, compound(X)), IVars, NVars).
