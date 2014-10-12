@@ -53,7 +53,11 @@ eval(assign(X, Y), OVars, NVars):- eval(Y, Val, OVars), find_replace_insert(X, V
 eval(compound([]), Var, Var).
 eval(compound([A|B]), OVars, NVars):- eval(A, OVars, IVars), eval(compound(B), IVars, NVars).
 
-/*If-else Declaration*/
+/*If-else Evaluation*/
 eval(ifthenelse(Expr, compound(X), compound(Y), compound(Z)), OVars, NVars):- eval(Expr, Boolval), 
 		ifthenelse(Boolval, compound(X), compound(Y), compound(Z)), eval(compound(Z), OVars, NVars).
 
+/*While Evaluation*/
+eval(while(A, compound(X)), OVars, NVars):- eval(A, false, OVars), NVars = OVars.
+eval(while(A, compound(X)), OVars, NVars):- eval(A, true, OVars), eval(compound(X), OVars, NVars), 
+		eval(while(A, compound(X)), NVars, _).
