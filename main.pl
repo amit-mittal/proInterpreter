@@ -68,3 +68,6 @@ eval(print(A), OVars, NVars):- eval(A, Val, OVars), write(Val), NVars = OVars.
 /*Compound statement Evaluation*/
 eval(compound([]), Var, Var).
 eval(compound([A|B]), OVars, NVars):- eval(A, OVars, IVars), eval(compound(B), IVars, NVars).
+
+/*TODO: if possible support brackets*/
+/*TODO: if possible support single if statement whithout else*/
