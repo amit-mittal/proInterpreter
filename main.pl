@@ -21,10 +21,6 @@ or_d(true, true, true).
 non_d(true, false).
 non_d(false, true).
 
-/*If-else Declaration*/
-ifthenelse(true, X, Y, X).
-ifthenelse(false, X, Y, Y).
-
 /*Expression Evaluation*/
 eval(A * B, CV, Vars):- eval(A, AV, Vars), eval(B, BV, Vars), CV is AV * BV.
 eval(A + B, CV, Vars):- eval(A, AV, Vars), eval(B, BV, Vars), CV is AV + BV.
@@ -54,8 +50,10 @@ eval(A =< B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 > CV2, R = f
 eval(assign(X, Y), OVars, NVars):- eval(Y, Val, OVars), find_replace_insert(X, Val, OVars, NVars).
 
 /*If-else Evaluation*/
-eval(ifthenelse(Expr, compound(X), compound(Y), compound(Z)), OVars, NVars):- eval(Expr, Boolval), 
-		ifthenelse(Boolval, compound(X), compound(Y), compound(Z)), eval(compound(Z), OVars, NVars).
+eval(ifthenelse(Expr, compound(X), compound(Y)), OVars, NVars):- eval(Expr, Boolval, OVars), 
+		Boolval == true, eval(compound(X), OVars, NVars).
+eval(ifthenelse(Expr, compound(X), compound(Y)), OVars, NVars):- eval(Expr, Boolval, OVars), 
+		Boolval == false, eval(compound(Y), OVars, NVars).
 
 /*While Evaluation*/
 eval(while(A, compound(X)), OVars, NVars):- eval(A, false, OVars), NVars = OVars.
@@ -64,6 +62,7 @@ eval(while(A, compound(X)), OVars, NVars):- eval(A, true, OVars), eval(compound(
 
 /*Print Evaluation*/
 eval(print(A), OVars, NVars):- eval(A, Val, OVars), write(Val), NVars = OVars.
+eval(print(\A), OVars, NVars):- write(A), NVars = OVars.
 
 /*Compound statement Evaluation*/
 eval(compound([]), Var, Var).
@@ -71,3 +70,4 @@ eval(compound([A|B]), OVars, NVars):- eval(A, OVars, IVars), eval(compound(B), I
 
 /*TODO: if possible support brackets*/
 /*TODO: if possible support single if statement whithout else*/
+/*TODO: remove warnings*/

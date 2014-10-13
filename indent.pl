@@ -30,7 +30,7 @@ indent(A =< B, _):- indent(A, _), write(' '), write(<=), write(' '), indent(B, _
 indent(assign(X, Y), Tabs):- handle_tabs(Tabs), indent(X, Tabs), write(' '), write(=), write(' '), indent(Y, Tabs).
 
 /*If-else Indentation*/
-indent(ifthenelse(Expr, compound(X), compound(Y), _), Tabs):- handle_tabs(Tabs), write(if), write(' '), 
+indent(ifthenelse(Expr, compound(X), compound(Y)), Tabs):- handle_tabs(Tabs), write(if), write(' '), 
 		indent(Expr, Tabs), nl, CTabs is Tabs+1, indent(compound(X), CTabs), handle_tabs(Tabs), write(else), nl, 
 		indent(compound(Y), CTabs), handle_tabs(Tabs), write(end).
 
@@ -39,6 +39,7 @@ indent(while(A, compound(X)), Tabs):- handle_tabs(Tabs), write(while), write(' '
 		CTabs is Tabs+1, indent(compound(X), CTabs), handle_tabs(Tabs), write(end).
 
 /*Print Indentation*/
+indent(print(\A), Tabs):- handle_tabs(Tabs), write(print), write(' '), write(A), !.
 indent(print(A), Tabs):- handle_tabs(Tabs), write(print), write(' '), indent(A, Tabs).
 
 /*Compound statement Indentation*/
