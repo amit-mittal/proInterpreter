@@ -1,6 +1,6 @@
 /*Find and Replace or Insert*/
 find_replace_insert(Var, Value, [], [Var/Value]).
-find_replace_insert(Var, Value, [Var/Oldval|Vars], [Var/Value|Vars]).
+find_replace_insert(Var, Value, [Var/Oldval|Vars], [Var/Value|Vars]):- !.
 find_replace_insert(Var, Value, [DVar/DValue|Vars], [DVar/DValue|NVars]):- find_replace_insert(Var, Value, Vars, NVars).
 
 /*Boolean Constants*/
@@ -35,34 +35,34 @@ eval(or(X, Y), R):- eval(X, XV), eval(Y, YV), or_d(XV, YV, R).
 eval(not(X), R):- eval(X, XV), non_d(XV, R).
 
 /*Conditional Expression Evaluation*/
-eval(A == B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 == CV2, R = true.
-eval(A == B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =\= CV2, R = false.
-eval(A > B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 > CV2, R = true.
-eval(A > B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =< CV2, R = false.
-eval(A < B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 < CV2, R = true.
-eval(A < B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 >= CV2, R = false.
-eval(A >= B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 >= CV2, R = true.
-eval(A >= B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 < CV2, R = false.
-eval(A =< B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =< CV2, R = true.
-eval(A =< B, R, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 > CV2, R = false.
+eval(A == B, true, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 == CV2.
+eval(A == B, false, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =\= CV2.
+eval(A > B, true, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 > CV2.
+eval(A > B, false, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =< CV2.
+eval(A < B, true, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 < CV2.
+eval(A < B, false, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 >= CV2.
+eval(A >= B, true, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 >= CV2.
+eval(A >= B, false, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 < CV2.
+eval(A =< B, true, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 =< CV2.
+eval(A =< B, false, Vars):- eval(A, CV1, Vars), eval(B, CV2, Vars), CV1 > CV2.
 
 /*Assignment Evaluation*/
 eval(assign(X, Y), OVars, NVars):- eval(Y, Val, OVars), find_replace_insert(X, Val, OVars, NVars).
 
 /*If-else Evaluation*/
 eval(ifthenelse(Expr, compound(X), compound(Y)), OVars, NVars):- eval(Expr, Boolval, OVars), 
-		Boolval == true, eval(compound(X), OVars, NVars).
+		Boolval == true, eval(compound(X), OVars, NVars), !.
 eval(ifthenelse(Expr, compound(X), compound(Y)), OVars, NVars):- eval(Expr, Boolval, OVars), 
 		Boolval == false, eval(compound(Y), OVars, NVars).
 
 /*While Evaluation*/
-eval(while(A, compound(X)), OVars, NVars):- eval(A, false, OVars), NVars = OVars.
-eval(while(A, compound(X)), OVars, NVars):- eval(A, true, OVars), eval(compound(X), OVars, IVars), 
+eval(while(A, compound(X)), OVars, OVars):- eval(A, Boolval, OVars), Boolval == false, !.
+eval(while(A, compound(X)), OVars, NVars):- eval(A, Boolval, OVars), Boolval == true, eval(compound(X), OVars, IVars), 
 		eval(while(A, compound(X)), IVars, NVars).
 
 /*Print Evaluation*/
-eval(print(A), OVars, NVars):- eval(A, Val, OVars), write(Val), NVars = OVars.
-eval(print(\A), OVars, NVars):- write(A), NVars = OVars.
+eval(print(A), OVars, OVars):- eval(A, Val, OVars), write(Val).
+eval(print(\A), OVars, OVars):- write(A).
 
 /*Compound statement Evaluation*/
 eval(compound([]), Var, Var).
