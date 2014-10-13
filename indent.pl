@@ -2,6 +2,8 @@
 logic_const(true).
 logic_const(false).
 
+/*If possible try to keep track of TAB*/
+
 /*Expression Indentation*/
 indent(A * B):- indent(A), write(' '), write(*), write(' '), indent(B).
 indent(A + B):- indent(A), write(' '), write(+), write(' '), indent(B).
@@ -21,3 +23,13 @@ indent(A > B):- indent(A), write(' '), write(>), write(' '), indent(B).
 indent(A < B):- indent(A), write(' '), write(<), write(' '), indent(B).
 indent(A >= B):- indent(A), write(' '), write(>=), write(' '), indent(B).
 indent(A =< B):- indent(A), write(' '), write(<=), write(' '), indent(B).
+
+/*Assignment Indentation*/
+indent(assign(X, Y)):- indent(X), write(' '), write(=), write(' '), indent(Y).
+
+/*If-else Indentation*/
+indent(ifthenelse(Expr, compound(X), compound(Y), compound(Z))):- write(if), write(' '), 
+		indent(Expr), nl, indent(compound(X)), write(else), nl, indent(compound(Y)).
+
+/*While Indentation*/
+indent(while(A, compound(X))):- write(while), write(' '), indent(A), nl, indent(compound(X)), nl, write(end).
