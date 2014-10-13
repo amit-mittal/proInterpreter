@@ -45,3 +45,5 @@ indent(print(A), Tabs):- handle_tabs(Tabs), write(print), write(' '), indent(A, 
 /*Compound statement Indentation*/
 indent(compound([]), _).
 indent(compound([A|B]), Tabs):- indent(A, Tabs), nl, indent(compound(B), Tabs).
+
+/*TODO Should we make print */
