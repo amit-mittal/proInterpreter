@@ -28,8 +28,15 @@ indent(A =< B):- indent(A), write(' '), write(<=), write(' '), indent(B).
 indent(assign(X, Y)):- indent(X), write(' '), write(=), write(' '), indent(Y).
 
 /*If-else Indentation*/
-indent(ifthenelse(Expr, compound(X), compound(Y), compound(Z))):- write(if), write(' '), 
+indent(ifthenelse(Expr, compound(X), compound(Y), _)):- write(if), write(' '), 
 		indent(Expr), nl, indent(compound(X)), write(else), nl, indent(compound(Y)).
 
 /*While Indentation*/
 indent(while(A, compound(X))):- write(while), write(' '), indent(A), nl, indent(compound(X)), nl, write(end).
+
+/*Print Indentation*/
+indent(print(A)):- write(print), write(' '), indent(A).
+
+/*Compound statement Indentation*/
+indent(compound([])).
+indent(compound([A|B])):- indent(A), nl, indent(compound(B)).
