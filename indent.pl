@@ -39,11 +39,9 @@ indent(while(A, compound(X)), Tabs):- handle_tabs(Tabs), write(while), write(' '
 		CTabs is Tabs+1, indent(compound(X), CTabs), handle_tabs(Tabs), write(end).
 
 /*Print Indentation*/
-indent(print(\A), Tabs):- handle_tabs(Tabs), write(print), write(' '), write(A), !.
+indent(print(\A), Tabs):- handle_tabs(Tabs), write(print), write(' '), write('\''), write(A), write('\''), !.
 indent(print(A), Tabs):- handle_tabs(Tabs), write(print), write(' '), indent(A, Tabs).
 
 /*Compound statement Indentation*/
 indent(compound([]), _).
 indent(compound([A|B]), Tabs):- indent(A, Tabs), nl, indent(compound(B), Tabs).
-
-/*TODO Should we make print */

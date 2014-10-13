@@ -40,7 +40,7 @@ indent(while(A, compound(X)), Tabs):- handle_tabs(Tabs), write(while), write(' '
 		CTabs is Tabs+1, indent(compound(X), CTabs), handle_tabs(Tabs), write(end).
 
 /*Print Indentation*/
-indent(print(\A), Tabs):- handle_tabs(Tabs), write(print), write(' '), write(A), !.
+indent(print(\A), Tabs):- handle_tabs(Tabs), write(print), write(' '), write('\''),write(A), write('\''), !.
 indent(print(A), Tabs):- handle_tabs(Tabs), write(print), write(' '), indent(A, Tabs).
 
 /*Compound statement Indentation*/
@@ -51,6 +51,9 @@ indent(compound([A|B]), Tabs):- indent(A, Tabs), nl, indent(compound(B), Tabs).
 find_replace_insert(Var, Value, [], [Var/Value]).
 find_replace_insert(Var, Value, [Var/_|Vars], [Var/Value|Vars]):- !.
 find_replace_insert(Var, Value, [DVar/DValue|Vars], [DVar/DValue|NVars]):- find_replace_insert(Var, Value, Vars, NVars).
+
+/*Pretty Print*/
+pretty_print(A):- indent(A, 0).
 
 
 /*================EVALUATION================*/
@@ -114,3 +117,6 @@ eval(print(\A), OVars, OVars):- write(A).
 /*Compound statement Evaluation*/
 eval(compound([]), Var, Var).
 eval(compound([A|B]), OVars, NVars):- eval(A, OVars, IVars), eval(compound(B), IVars, NVars).
+
+/*Init Evaluation*/
+evaluation(A):- eval(A, [], _).
